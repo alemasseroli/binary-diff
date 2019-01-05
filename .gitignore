@@ -1,0 +1,15 @@
+.*
+*~
+bin
+build
+target
+.idea/
+*.gz
+*.jar
+*.log
+!.gitignore
+!gradle-wrapper.jar
+!.editorconfig
+/classes
+out
+*.iml
