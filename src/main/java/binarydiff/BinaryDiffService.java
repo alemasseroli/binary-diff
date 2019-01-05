@@ -5,6 +5,10 @@ class BinaryDiffService {
     private String left;
     private String right;
 
+    public String diff() {
+        return "";
+    }
+
     public String left() {
         return left;
     }

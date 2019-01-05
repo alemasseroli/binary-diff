@@ -5,9 +5,7 @@ import spark.Response;
 
 import java.io.IOException;
 
-import static spark.Spark.get;
-import static spark.Spark.port;
-import static spark.Spark.put;
+import static spark.Spark.*;
 
 public class BinaryDiffRouter {
 
@@ -20,13 +18,13 @@ public class BinaryDiffRouter {
         put("/v1/diff/:id/left", (request, response) -> {
             final String left = request.body();
             binaryDiffService.setLeft(left);
-            return mapper.writeValueAsString(new RouterResponse(200, "ok", left));
+            return mapper.writeValueAsString(okResponse(left));
         });
 
         put("/v1/diff/:id/right", (request, response) -> {
             final String right = request.body();
             binaryDiffService.setRight(right);
-            return mapper.writeValueAsString(new RouterResponse(200, "ok", right));
+            return mapper.writeValueAsString(okResponse(right));
         });
 
         get("/v1/diff/:id", (request, response) -> {
@@ -34,14 +32,12 @@ public class BinaryDiffRouter {
             if (binaryDiffService.left() == null || binaryDiffService.right() == null) {
                 routerResponse = new RouterResponse(400, "Left and Right members must be set"); // 400 Bad Request
             } else {
-                //TODO
-                return "diff";
+                final String diff = binaryDiffService.diff();
+                routerResponse = okResponse(diff);
             }
             response.status(routerResponse.status);
             return mapper.writeValueAsString(routerResponse);
         });
-
-        // extra
 
         get("/v1/diff/:id/left", (request, response) -> {
             final String left = binaryDiffService.left();
@@ -54,12 +50,16 @@ public class BinaryDiffRouter {
         });
     }
 
+    private static RouterResponse okResponse(String value) throws IOException {
+        return new RouterResponse(200, "ok", value);
+    }
+
     private static String getElementIfPresent(String elem, Response response) throws IOException {
         RouterResponse routerResponse;
         if (elem == null) {
             routerResponse = new RouterResponse(404, "Member not set"); // 404 Not Found
         } else {
-            routerResponse = new RouterResponse(200, "ok", elem);
+            routerResponse = okResponse(elem);
         }
         response.status(routerResponse.status);
         return mapper.writeValueAsString(routerResponse);
