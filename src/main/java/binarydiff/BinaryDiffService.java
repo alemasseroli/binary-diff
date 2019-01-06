@@ -13,19 +13,17 @@ class BinaryDiffService {
     private Map<String, String> rightMembers = new ConcurrentHashMap<>();
 
     public String diff(String id) {
-        String diff;
         final String left = left(id);
         final String right = right(id);
         if (left.equals(right)) {
-            diff = "Values are equal!";
+            return "Values are equal!";
         } else if (left.length() != right.length()) {
-            diff = "Values have different sizes.";
+            return "Values have different sizes";
         } else {
             final int diffLength = difference(left, right).length();
             final int diffIndex = indexOfDifference(left, right);
-            diff = format("Values differ in {0} chars at position: {1}", diffLength, diffIndex);
+            return format("Values differ in {0} chars at position: {1}", diffLength, diffIndex);
         }
-        return diff;
     }
 
     public String left(String id) {

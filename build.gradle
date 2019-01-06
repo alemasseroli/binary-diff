@@ -1,14 +1,18 @@
-group 'alejandro.masseroli'
-version '1.0-SNAPSHOT'
+plugins {
+    id 'application'
+    id 'java'
+    id "com.github.johnrengelman.shadow" version "2.0.1"
+}
 
 description = 'Binary Diff'
 
-apply plugin: 'application'
-
-mainClassName = 'binarydiff.BinaryDiffRouter'
-
 repositories {
     mavenCentral()
+}
+
+shadowJar {
+    zip64 true
+    archiveName 'binary-diff.jar'
 }
 
 dependencies {
@@ -17,4 +21,9 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.5'
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.5'
+    testCompile group: 'org.assertj', name: 'assertj-core', version: '1.0.0'
+    testCompile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.0'
+    testCompile 'junit:junit:4.12'
 }
+
+mainClassName = 'binarydiff.BinaryDiffRouter'
