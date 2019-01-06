@@ -18,6 +18,11 @@ public class BinaryDiffRouter {
     public static void main(String[] args) {
         port(8080);
 
+        /**
+         * @param id
+         * @body data
+         * Sets left member for id.
+         */
         put("/v1/diff/:id/left", (request, response) -> {
             final String id = request.params(":id");
             final String left = getDecodedMemberFromBody(request);
@@ -25,6 +30,11 @@ public class BinaryDiffRouter {
             return mapper.writeValueAsString(okResponse(left));
         });
 
+        /**
+         * @param id
+         * @body data
+         * Sets right member for id.
+         */
         put("/v1/diff/:id/right", (request, response) -> {
             final String id = request.params(":id");
             final String right = getDecodedMemberFromBody(request);
@@ -32,6 +42,10 @@ public class BinaryDiffRouter {
             return mapper.writeValueAsString(okResponse(right));
         });
 
+        /**
+         * @param id
+         * @return Difference between left and right member for id.
+         */
         get("/v1/diff/:id", (request, response) -> {
             final String id = request.params(":id");
             final String left = binaryDiffService.left(id);
@@ -48,12 +62,20 @@ public class BinaryDiffRouter {
             return mapper.writeValueAsString(routerResponse);
         });
 
+        /**
+         * @param id
+         * @return Left member for id.
+         */
         get("/v1/diff/:id/left", (request, response) -> {
             final String id = request.params(":id");
             final String left = binaryDiffService.left(id);
             return getElementIfPresent(left, response);
         });
 
+        /**
+         * @param id
+         * @return Right member for id.
+         */
         get("/v1/diff/:id/right", (request, response) -> {
             final String id = request.params(":id");
             final String right = binaryDiffService.right(id);
