@@ -1,6 +1,8 @@
 package binarydiff;
 
+import binarydiff.decoder.Base64Decoder;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import spark.Request;
 import spark.Response;
 
 import java.io.IOException;
@@ -10,19 +12,20 @@ import static spark.Spark.*;
 public class BinaryDiffRouter {
 
     private static BinaryDiffService binaryDiffService = new BinaryDiffService();
+    private static Base64Decoder decoder = new Base64Decoder();
     private static ObjectMapper mapper = new ObjectMapper();
 
     public static void main(String[] args) {
         port(8080);
 
         put("/v1/diff/:id/left", (request, response) -> {
-            final String left = request.body();
+            final String left = getDecodedMemberFromBody(request);
             binaryDiffService.setLeft(left);
             return mapper.writeValueAsString(okResponse(left));
         });
 
         put("/v1/diff/:id/right", (request, response) -> {
-            final String right = request.body();
+            final String right = getDecodedMemberFromBody(request);
             binaryDiffService.setRight(right);
             return mapper.writeValueAsString(okResponse(right));
         });
@@ -50,7 +53,11 @@ public class BinaryDiffRouter {
         });
     }
 
-    private static RouterResponse okResponse(String value) throws IOException {
+    private static String getDecodedMemberFromBody(Request request) {
+        return decoder.decodeBase64(request.body());
+    }
+
+    private static RouterResponse okResponse(String value) {
         return new RouterResponse(200, "ok", value);
     }
 
