@@ -19,23 +19,29 @@ public class BinaryDiffRouter {
         port(8080);
 
         put("/v1/diff/:id/left", (request, response) -> {
+            final String id = request.params(":id");
             final String left = getDecodedMemberFromBody(request);
-            binaryDiffService.setLeft(left);
+            binaryDiffService.setLeft(id, left);
             return mapper.writeValueAsString(okResponse(left));
         });
 
         put("/v1/diff/:id/right", (request, response) -> {
+            final String id = request.params(":id");
             final String right = getDecodedMemberFromBody(request);
-            binaryDiffService.setRight(right);
+            binaryDiffService.setRight(id, right);
             return mapper.writeValueAsString(okResponse(right));
         });
 
         get("/v1/diff/:id", (request, response) -> {
+            final String id = request.params(":id");
+            final String left = binaryDiffService.left(id);
+            final String right = binaryDiffService.right(id);
+
             RouterResponse routerResponse;
-            if (binaryDiffService.left() == null || binaryDiffService.right() == null) {
+            if (left == null || right == null) {
                 routerResponse = new RouterResponse(400, "Left and Right members must be set"); // 400 Bad Request
             } else {
-                final String diff = binaryDiffService.diff();
+                final String diff = binaryDiffService.diff(id);
                 routerResponse = okResponse(diff);
             }
             response.status(routerResponse.status);
@@ -43,12 +49,14 @@ public class BinaryDiffRouter {
         });
 
         get("/v1/diff/:id/left", (request, response) -> {
-            final String left = binaryDiffService.left();
+            final String id = request.params(":id");
+            final String left = binaryDiffService.left(id);
             return getElementIfPresent(left, response);
         });
 
         get("/v1/diff/:id/right", (request, response) -> {
-            final String right = binaryDiffService.right();
+            final String id = request.params(":id");
+            final String right = binaryDiffService.right(id);
             return getElementIfPresent(right, response);
         });
     }
