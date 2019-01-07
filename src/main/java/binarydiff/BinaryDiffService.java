@@ -1,7 +1,7 @@
 package binarydiff;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static java.text.MessageFormat.format;
 import static org.apache.commons.lang3.StringUtils.difference;
@@ -9,8 +9,8 @@ import static org.apache.commons.lang3.StringUtils.indexOfDifference;
 
 class BinaryDiffService {
 
-    private Map<String, String> leftMembers = new ConcurrentHashMap<>();
-    private Map<String, String> rightMembers = new ConcurrentHashMap<>();
+    private Map<String, String> leftMembers = new HashMap<>();
+    private Map<String, String> rightMembers = new HashMap<>();
 
     public String diff(String id) {
         final String left = left(id);

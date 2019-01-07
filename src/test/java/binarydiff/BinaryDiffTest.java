@@ -16,7 +16,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 
 public class BinaryDiffTest {
 
-    private final String id = "id1";
+    private final String id = "id";
     private final ObjectMapper mapper = new ObjectMapper();
 
     @BeforeClass
@@ -55,12 +55,22 @@ public class BinaryDiffTest {
     }
 
     @Test
-    public void testGetLeftMember() throws IOException {
-        String path = MessageFormat.format("/v1/diff/{0}/left", id);
+    public void testNotFoundMember() {
+        final String newId = "newId";
+        String path = MessageFormat.format("/v1/diff/{0}/left", newId);
         get(path).then()
                 .assertThat()
                 .statusCode(404);
 
+        path = MessageFormat.format("/v1/diff/{0}/right", newId);
+        get(path).then()
+                .assertThat()
+                .statusCode(404);
+    }
+
+    @Test
+    public void testGetLeftMember() throws IOException {
+        final String path = MessageFormat.format("/v1/diff/{0}/left", id);
         final String value = "Value to set and get";
         assertCorrectSetResponse(path, value);
         assertCorrectGetResponse(path, value);
@@ -69,10 +79,6 @@ public class BinaryDiffTest {
     @Test
     public void testGetRightMember() throws IOException {
         final String path = MessageFormat.format("/v1/diff/{0}/right", id);
-        get(path).then()
-                .assertThat()
-                .statusCode(404);
-
         final String value = "Value to set and get";
         assertCorrectSetResponse(path, value);
         assertCorrectGetResponse(path, value);
@@ -94,11 +100,6 @@ public class BinaryDiffTest {
 
     @Test
     public void testEqualMembersDiff() throws IOException {
-        final String path = MessageFormat.format("/v1/diff/{0}", id);
-        get(path).then()
-                .assertThat()
-                .statusCode(400);
-
         final String leftPath = MessageFormat.format("/v1/diff/{0}/left", id);
         assertCorrectSetResponse(leftPath, "Equal members");
 
@@ -131,6 +132,15 @@ public class BinaryDiffTest {
 
         final String diffPath = MessageFormat.format("/v1/diff/{0}", id);
         assertDiffResponse(diffPath, "Values differ in 3 chars at position: 14");
+    }
+
+    @Test
+    public void testInvalidDiff() {
+        final String newId = "newId";
+        final String path = MessageFormat.format("/v1/diff/{0}", newId);
+        get(path).then()
+                .assertThat()
+                .statusCode(400);
     }
 
     private void assertDiffResponse(String path, String value) throws IOException {
