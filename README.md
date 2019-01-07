@@ -54,3 +54,21 @@ curl localhost:8080/v1/diff/<ID>/left
 curl localhost:8080/v1/diff/<ID>/right
 ```
 
+### Example
+
+```sh
+curl -XPUT localhost:8080/v1/diff/id1/left -d 'VGVzdGluZyBkYXRh'
+```
+> {"status":200, "message":"ok", "value":"Testing data"}
+
+```sh
+curl -XPUT localhost:8080/v1/diff/id1/right -d 'VGVzdGluZyBkYXRh'
+```
+> {"status":200, "message":"ok", "value":"Testing data"}
+
+
+```sh
+curl localhost:8080/v1/diff/id1
+```
+> {"status":200, "message":"ok", "value":"Values are equal!"}
+
